@@ -9,6 +9,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Product
 from .forms import ProductForm, RegisterForm, LoginForm
+from django.contrib.auth.models import User
 
 class Topv(TokenObtainPairView):
     serializer_class = ATokenObtainPairSerializer
@@ -30,12 +31,16 @@ def register(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            # user = User(username=username, password=password)
-            # user.save()
-            return redirect('login')  
+            new_user = User.objects.create_user(username=username, password=password)
+            new_user.save()
+            return redirect('login') 
     else:
         form = RegisterForm()
     return render(request, 'authentication/register.html', {'form': form})
+
+def registration_success(request):
+    return render(request, 'authentication/register_success.html')
+
 
 def user_login(request):
     if request.method == 'POST':
