@@ -11,12 +11,15 @@ from .models import Product
 from .forms import ProductForm, RegisterForm, LoginForm
 from django.contrib.auth.models import User
 
+# view to obtain a token pair
 class Topv(TokenObtainPairView):
     serializer_class = ATokenObtainPairSerializer
 
+# view to refresh a token
 class TokenRefreshView(TokenRefreshView):
     pass
 
+# API view to handle user registration
 class RegisterUser(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -25,15 +28,19 @@ class RegisterUser(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# view to handle user registration
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
+            # extract username/ password from the form
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+            # create new user with the provided credentials
             new_user = User.objects.create_user(username=username, password=password)
             new_user.save()
-            return redirect('login') 
+            # redirect to login page after successful
+            return redirect('login')
     else:
         form = RegisterForm()
     return render(request, 'authentication/register.html', {'form': form})
@@ -41,17 +48,19 @@ def register(request):
 def registration_success(request):
     return render(request, 'authentication/register_success.html')
 
-
+# View to handle user login
 def user_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
+            # extract username + password
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
+            # authenticate user
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('dashboard')  
+                return redirect('dashboard')
     else:
         form = AuthenticationForm()
     return render(request, 'authentication/login.html', {'form': form})
@@ -80,4 +89,5 @@ def add_product(request):
             return redirect('admin_products')
     else:
         form = ProductForm()
+
     return render(request, 'authentication/add_product.html', {'form': form})
