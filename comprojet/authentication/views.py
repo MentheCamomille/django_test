@@ -36,10 +36,8 @@ def register(request):
             # extract username/ password from the form
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            # create new user with the provided credentials
             new_user = User.objects.create_user(username=username, password=password)
             new_user.save()
-            # redirect to login page after successful
             return redirect('login')
     else:
         form = RegisterForm()
@@ -48,7 +46,6 @@ def register(request):
 def registration_success(request):
     return render(request, 'authentication/register_success.html')
 
-# View to handle user login
 def user_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
