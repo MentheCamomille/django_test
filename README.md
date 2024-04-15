@@ -17,5 +17,7 @@
 
 ### Documentation
 https://www.djangoproject.com/
+
 https://jwt.io/introduction
+
 https://www.mongodb.com/docs/manual/data-modeling/
