@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
-from authentication.views import register
+from authentication.views import register, user_login
 
 def home(request):
     return HttpResponse("Hello World !")
@@ -24,6 +24,7 @@ def home(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('authentication.urls')),
+    path('login/', user_login, name='login'),
     path('register/', register, name='register'),
     path('', home), 
 ]   
